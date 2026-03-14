@@ -38,6 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // After we have an access token, fetch user profile + subscription + ensure an API key exists
   const bootstrap = useCallback(async (accessToken: string) => {
+    // Set the API key from cache immediately so useSnapshot can fire in parallel
+    // with the profile/subscription fetches rather than waiting for them.
+    const stored = localStorage.getItem(KEY_API)
+    if (stored) setApiKey(stored)
+
     const [profile, sub] = await Promise.all([
       authApi.me(accessToken),
       authApi.subscriptionMe(accessToken).catch(() => null),
@@ -45,15 +50,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(profile)
     setSubscription(sub)
 
-    // Reuse stored key if present, otherwise create one
-    const stored = localStorage.getItem(KEY_API)
-    if (stored) {
-      setApiKey(stored)
-      return
-    }
+    if (stored) return
 
-    // The list endpoint does not expose the raw key value, so we must
-    // create a new "dashboard" key to obtain the raw secret once and cache it.
+    // No cached key: create one. The raw key is only returned at creation time,
+    // so we must create a new key to cache it locally.
     const created = await authApi.createKey(accessToken)
     localStorage.setItem(KEY_API, created.key)
     setApiKey(created.key)
