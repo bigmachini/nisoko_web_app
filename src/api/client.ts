@@ -11,6 +11,17 @@ import type {
 
 const API_BASE = '/api/v1'
 
+/** Thrown when an API request fails. Includes status for 401 handling. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
 function apiKeyHeaders(apiKey: string): HeadersInit {
   return { 'Content-Type': 'application/json', 'X-API-Key': apiKey }
 }
@@ -23,7 +34,8 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, init)
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }))
-    throw new Error((err as { detail?: string }).detail ?? res.statusText)
+    const message = (err as { detail?: string }).detail ?? res.statusText
+    throw new ApiError(message, res.status)
   }
   return res.json() as Promise<T>
 }
@@ -58,6 +70,13 @@ export const authApi = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, full_name }),
+    }),
+
+  refresh: (refreshToken: string) =>
+    request<TokenResponse>('/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refreshToken }),
     }),
 
   me: (token: string) =>

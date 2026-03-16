@@ -6,12 +6,12 @@ A React single-page application for viewing live Nairobi Securities Exchange mar
 
 - Node.js 18+ and npm
 - A running instance of `nse_api` (default: `http://localhost:38000`)
-- A NiSoko API key (FREE plan or higher)
+- A NiSoko account (FREE plan or higher)
 
 ## Setup
 
 ```bash
-cd nse_dashboard
+cd nisoko_web_app
 npm install
 ```
 
@@ -43,24 +43,32 @@ For production, point the reverse proxy (nginx, Caddy, etc.) at the built `dist/
 
 ## Usage
 
-1. Enter your NiSoko API key in the header to load market data
-2. Click any row in the market table to see the full OHLC detail panel
-3. Use the **Movers** sidebar tabs to view top gainers, losers, and volume leaders (requires STARTER plan or higher)
-4. Toggle dark/light theme with the button in the top-right corner
-5. Set the auto-refresh interval (30s / 1m / 2m) or turn it off
+1. **Sign in** or **register** to access the dashboard. An API key is created automatically on first login.
+2. Click any row in the market table to see the full OHLC detail panel.
+3. Use the **Movers** sidebar tabs to view top gainers, losers, and volume leaders (requires STARTER plan or higher).
+4. Toggle dark/light theme with the button in the top-right corner.
+5. Set the auto-refresh interval (30s / 1m / 2m) or turn it off.
+
+Sessions are kept alive using refresh tokens. If the access token expires (e.g. after 30 minutes of inactivity), the app automatically refreshes it in the background so you stay signed in.
 
 ## Project structure
 
 ```
 src/
-├── api/client.ts          # Typed fetch wrapper — adds X-API-Key header
+├── api/client.ts          # Typed fetch wrapper — API key + Bearer auth, refresh on 401
+├── context/AuthContext.tsx # Login, register, session restore, refresh token flow
 ├── hooks/                 # React Query hooks for snapshot + movers data
 ├── components/
-│   ├── Header.tsx         # Branding, API key input, controls
+│   ├── Header.tsx         # Branding, refresh controls, user menu, plan badge
 │   ├── StatsBar.tsx       # Market-wide counters (gainers, losers, volume)
 │   ├── MoversPanel.tsx    # Gainers / Losers / Volume sidebar
 │   ├── MarketTable.tsx    # Sortable, searchable stock table
-│   └── StockDetail.tsx    # OHLC detail card (shown on row click)
+│   ├── StockDetail.tsx    # OHLC detail card (shown on row click)
+│   ├── ProtectedRoute.tsx # Redirects unauthenticated users to /login
+│   └── ThemeWrapper.tsx   # Dark/light theme provider
+├── pages/
+│   ├── LoginPage.tsx
+│   └── RegisterPage.tsx
 ├── types/index.ts         # TypeScript types aligned with API schemas
 └── utils/format.ts        # Number formatters (price, volume, turnover)
 ```

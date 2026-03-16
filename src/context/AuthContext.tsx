@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { authApi } from '../api/client'
+import { ApiError, authApi } from '../api/client'
 import type { SubscriptionInfo, UserProfile } from '../types'
 
 // ── Storage keys ──────────────────────────────────────────────────────────────
@@ -59,23 +59,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setApiKey(created.key)
   }, [])
 
-  // Restore session on mount
+  // Restore session on mount; on 401, try refresh token before giving up
   useEffect(() => {
     if (bootstrapped.current) return
     bootstrapped.current = true
 
-    const token = localStorage.getItem(KEY_ACCESS)
-    if (!token) {
+    let token = localStorage.getItem(KEY_ACCESS)
+    const refreshToken = localStorage.getItem(KEY_REFRESH)
+
+    if (!token && !refreshToken) {
       setLoading(false)
       return
     }
 
-    bootstrap(token)
-      .catch(() => {
-        // Token expired or invalid — clear everything
+    async function restore() {
+      try {
+        // If we only have refresh token (e.g. after tab closed), refresh first
+        if (!token && refreshToken) {
+          const tokens = await authApi.refresh(refreshToken)
+          localStorage.setItem(KEY_ACCESS, tokens.access_token)
+          token = tokens.access_token
+        }
+        if (token) {
+          await bootstrap(token)
+        }
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 401 && refreshToken) {
+          try {
+            const tokens = await authApi.refresh(refreshToken)
+            localStorage.setItem(KEY_ACCESS, tokens.access_token)
+            await bootstrap(tokens.access_token)
+            return
+          } catch {
+            // Refresh failed — token revoked or expired
+          }
+        }
         clearStorage()
-      })
-      .finally(() => setLoading(false))
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    restore()
   }, [bootstrap])
 
   const login = useCallback(async (email: string, password: string) => {
