@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Logo } from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
 
 export function LoginPage() {
@@ -29,11 +30,10 @@ export function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <span className="logo-icon">◈</span>
-          <span className="logo-name">NiSoko</span>
+          <Logo showTagline size="md" />
         </div>
         <h1 className="auth-title">Sign in</h1>
-        <p className="auth-sub">NSE Market Intelligence</p>
+        <p className="auth-sub">African Markets, Made Readable</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -72,6 +72,11 @@ export function LoginPage() {
         <p className="auth-footer">
           Don't have an account?{' '}
           <Link to="/register">Create one</Link>
+        </p>
+        <p className="auth-footer auth-footer-site">
+          <a href="https://nisoko.africa" target="_blank" rel="noopener noreferrer">
+            nisoko.africa
+          </a>
         </p>
       </div>
     </div>

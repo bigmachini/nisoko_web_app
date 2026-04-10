@@ -1,5 +1,6 @@
 import { LogOut, Moon, RefreshCw, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { Logo } from './Logo'
 import { useTheme } from './ThemeWrapper'
 import type { RefreshInterval } from '../types'
 
@@ -42,11 +43,7 @@ export function Header({ refreshInterval, onRefreshChange, lastUpdated, isLoadin
     <header className="header">
       <div className="header-brand">
         <div className="header-logo">
-          <span className="logo-icon">◈</span>
-          <div>
-            <span className="logo-name">NiSoko</span>
-            <span className="logo-sub">NSE Market Intelligence</span>
-          </div>
+          <Logo showTagline size="sm" linkToSite />
         </div>
       </div>
 

@@ -1,12 +1,12 @@
-# NiSoko NSE Dashboard
+# nisoko NSE Dashboard
 
-A React single-page application for viewing live Nairobi Securities Exchange market data, powered by the NiSoko API.
+**African Markets, Made Readable** — A React single-page application for real-time Nairobi Securities Exchange market data, powered by the [nisoko](https://nisoko.africa) API.
 
 ## Prerequisites
 
 - Node.js 18+ and npm
 - A running instance of `nse_api` (default: `http://localhost:38000`)
-- A NiSoko account (FREE plan or higher)
+- A nisoko account (FREE plan or higher)
 
 ## Setup
 

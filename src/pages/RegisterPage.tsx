@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Logo } from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
 
 export function RegisterPage() {
@@ -41,11 +42,10 @@ export function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <span className="logo-icon">◈</span>
-          <span className="logo-name">NiSoko</span>
+          <Logo showTagline size="md" />
         </div>
         <h1 className="auth-title">Create account</h1>
-        <p className="auth-sub">Start with a free plan — no credit card required</p>
+        <p className="auth-sub">Real-Time Market Data API · Start free, no credit card</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -109,6 +109,11 @@ export function RegisterPage() {
         <p className="auth-footer">
           Already have an account?{' '}
           <Link to="/login">Sign in</Link>
+        </p>
+        <p className="auth-footer auth-footer-site">
+          <a href="https://nisoko.africa" target="_blank" rel="noopener noreferrer">
+            nisoko.africa
+          </a>
         </p>
       </div>
     </div>

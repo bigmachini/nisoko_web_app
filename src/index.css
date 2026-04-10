@@ -21,6 +21,8 @@
   --text-3:     #5a7a9a;
   --accent:     #3b82f6;
   --accent-2:   #1d4ed8;
+  --cta:        #e11d48;
+  --cta-hover:  #be123c;
   --up:         #10b981;
   --up-bg:      rgba(16, 185, 129, 0.10);
   --up-border:  rgba(16, 185, 129, 0.25);
@@ -45,6 +47,8 @@
   --text-3:     #94a3b8;
   --accent:     #2563eb;
   --accent-2:   #1d4ed8;
+  --cta:        #e11d48;
+  --cta-hover:  #be123c;
   --up:         #059669;
   --up-bg:      rgba(5, 150, 105, 0.08);
   --up-border:  rgba(5, 150, 105, 0.20);
@@ -98,26 +102,43 @@ input { font-family: 'JetBrains Mono', monospace; }
   gap: 10px;
 }
 
-.logo-icon {
-  font-size: 22px;
-  color: var(--accent);
-  line-height: 1;
+/* ── Logo Component ─────────────────────────────────────────────────────────── */
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.logo-name {
-  font-size: 18px;
-  font-weight: 700;
+.logo-img {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.logo-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-wordmark {
+  font-size: inherit;
+  font-weight: 500;
   color: var(--text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.02em;
 }
 
-.logo-sub {
-  display: block;
+.logo-tagline {
   font-size: 10px;
   color: var(--text-3);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover .logo-wordmark { color: var(--accent); }
 
 .header-controls {
   display: flex;
@@ -894,20 +915,20 @@ input { font-family: 'JetBrains Mono', monospace; }
 }
 
 .auth-btn {
-  background: var(--accent);
+  background: var(--cta);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
   margin-top: 4px;
   font-family: inherit;
 }
 
-.auth-btn:hover:not(:disabled) { opacity: 0.88; }
+.auth-btn:hover:not(:disabled) { background: var(--cta-hover); }
 .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .auth-footer {
@@ -924,6 +945,9 @@ input { font-family: 'JetBrains Mono', monospace; }
 }
 
 .auth-footer a:hover { text-decoration: underline; }
+
+.auth-footer-site { margin-top: 8px; }
+.auth-footer-site a { color: var(--cta); font-weight: 600; }
 
 /* ── Scrollbar ───────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
